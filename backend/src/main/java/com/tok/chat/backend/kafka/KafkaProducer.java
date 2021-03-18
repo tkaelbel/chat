@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class KafkaProducer implements ChatMessageBus {
 
-    // @Autowired
-    // private KafkaTemplate<String, Message> kafkaTemplate;
+    @Autowired
+    private KafkaTemplate<String, Message> kafkaTemplate;
 
     @Override
     public void emit(Message message) {
-        // kafkaTemplate.send("chat", message);
+        kafkaTemplate.send("chat", message);
     }
     
 }

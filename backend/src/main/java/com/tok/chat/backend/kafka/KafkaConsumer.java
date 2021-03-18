@@ -7,14 +7,15 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-// @Component
+@Component
 public class KafkaConsumer {
-    
-    // @Autowired
-    // private SimpMessagingTemplate template;
 
-    // @KafkaListener(topics = "chat", groupId = "group-id")
-    // public void listen(Message message){
-    //     template.convertAndSend(message);
-    // }
+    @Autowired
+    private SimpMessagingTemplate template;
+
+    @KafkaListener(topics = "chat", containerFactory = "kafkaListenerContainerFactory")
+    public void listen(Message message){
+        System.out.println("Received greeting message: " + message);
+        template.convertAndSend("chat", message);
+    }
 }
