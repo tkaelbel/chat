@@ -12,7 +12,7 @@ import org.springframework.kafka.core.KafkaAdmin;
 @Configuration
 public class KafkaTopicConfig {
     
-    private static final String ADDRESS = "localhost:49153";
+    private static final String ADDRESS = "localhost:9092";
 
     @Bean
     public KafkaAdmin kafkaAdmin() {
