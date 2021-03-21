@@ -1,7 +1,5 @@
 package com.tok.chat.backend.kafka;
 
-import java.util.Random;
-
 import com.tok.chat.backend.database.message.Message;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,7 @@ public class KafkaProducer implements ChatMessageBus {
 
     @Override
     public void emit(Message message) {
-        kafkaTemplate.send("chat", "12", message);
+        kafkaTemplate.send("chat", message);
     }
     
 }

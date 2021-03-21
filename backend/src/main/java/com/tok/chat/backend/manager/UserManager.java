@@ -20,6 +20,6 @@ public class UserManager {
     public User findOrCreateUser(String userName){
         User user = userRepository.findByName(userName);
         if(user != null) return user;
-        return userRepository.save(userName);
+        return userRepository.save(new User(null, userName));
     }
 }
