@@ -57,11 +57,15 @@
 <script>
 import { api } from "boot/axios";
 
+const socket = "ws://localhost:8000/socket";
+
+let ws = undefined;
+
 export default {
   data() {
     return {
       messages: null,
-      user: null
+      user: null,
     };
   },
   methods: {
@@ -73,7 +77,7 @@ export default {
         }));
       });
     },
-    
+
     sendMessage(event) {
       event.preventDefault();
       if (this.message !== "") {
@@ -81,15 +85,45 @@ export default {
           text: this.message,
           userId: this.user.id,
         };
-        return api
-          .post('/messages/new', body)
-          .then(() => (this.message = ""));
+        return api.post("/messages/new", body).then(() => (this.message = ""));
       }
     },
 
     isCurrentUser(userId) {
       return userId === this.user.id;
-    }
+    },
+
+    isToday(date) {
+      const today = new Date();
+      return (
+        date.getDate() === today.getDate() &&
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear()
+      );
+    },
+
+    mounted(){
+      this.connect();
+    },
+
+    destroyed(){
+      this.disconnect();
+    },
+
+    formattedDate(date, isToday){
+      if(isToday){
+        return new Intl.DateTimeFormat('en-GB', {hour: '2-digit', minute: 'numeric'}).format(date);
+      }
+      return new Intl.DateTimeFormat('en-GB', {year: 'numeric', month: 'long', day: 'numeric'}).format(date);
+    },
+
+    connect(){
+      const socket = new WebSocket()
+    },
+    
+    disconnect(){
+
+    },
   },
 };
 </script>
