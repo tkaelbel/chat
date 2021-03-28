@@ -9,7 +9,7 @@
             isCurrentUser(message.userId) ? 'current-user' : 'other-user'
           "
         >
-          <div class="bubble">
+          <div class="bubble" v-if="message">
             <div v-if="!isCurrentUser(message.userId)" class="user-name">
               {{ message.userName }}
             </div>
@@ -34,20 +34,19 @@
         label="Write a message"
         counter
         maxlength="200"
-        :dense="dense"
         type="text"
       >
         <template v-slot:append>
           <q-icon
-            v-if="text !== ''"
+            v-if="message !== ''"
             name="close"
-            @click="text = ''"
+            @click="message = ''"
             class="cursor-pointer"
           />
         </template>
 
         <template v-slot:after>
-          <q-btn round dense flat icon="send" />
+          <q-btn type="submit" round flat icon="send" @click="sendMessage"/>
         </template>
       </q-input>
     </q-form>
@@ -56,16 +55,18 @@
 
 <script>
 import { api } from "boot/axios";
+import { Stomp } from "@stomp/stompjs";
 
 const socket = "ws://localhost:8000/socket";
 
 let ws = undefined;
 
 export default {
+  props: ['user'],
   data() {
     return {
       messages: null,
-      user: null,
+      message: null,
     };
   },
   methods: {
@@ -78,12 +79,11 @@ export default {
       });
     },
 
-    sendMessage(event) {
-      event.preventDefault();
+    sendMessage() {
       if (this.message !== "") {
         const body = {
           text: this.message,
-          userId: this.user.id,
+          userId: this.user.name,
         };
         return api.post("/messages/new", body).then(() => (this.message = ""));
       }
@@ -102,27 +102,44 @@ export default {
       );
     },
 
-    mounted(){
+    mounted() {
       this.connect();
     },
 
-    destroyed(){
+    destroyed() {
       this.disconnect();
     },
 
-    formattedDate(date, isToday){
-      if(isToday){
-        return new Intl.DateTimeFormat('en-GB', {hour: '2-digit', minute: 'numeric'}).format(date);
+    formattedDate(date, isToday) {
+      if (isToday) {
+        return new Intl.DateTimeFormat("en-GB", {
+          hour: "2-digit",
+          minute: "numeric",
+        }).format(date);
       }
-      return new Intl.DateTimeFormat('en-GB', {year: 'numeric', month: 'long', day: 'numeric'}).format(date);
+      return new Intl.DateTimeFormat("en-GB", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }).format(date);
     },
 
-    connect(){
-      const socket = new WebSocket()
+    connect() {
+      const webSocket = new WebSocket(socket);
+      ws = Stomp.over(webSocket);
+      ws.connect({}, () => {
+        ws.subscribe("/chat", (frame) => {
+          const message = JSON.parse(frame.body);
+          const formatedMessage = { ...message, date: new Date(message.date) };
+          this.messages = [...this.messages, formatedMessage];
+        });
+      });
     },
-    
-    disconnect(){
 
+    disconnect() {
+      if (ws != null) {
+        ws.ws.close();
+      }
     },
   },
 };
