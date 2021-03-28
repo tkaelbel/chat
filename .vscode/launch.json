@@ -8,6 +8,17 @@
             "console": "integratedTerminal",
             "mainClass": "com.tok.chat.backend.BackendApplication",
             "projectName": "backend"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Quasar App: chrome",
+            "url": "http://localhost:8100/",
+            "webRoot": "${workspaceFolder}/frontend/src",
+            "breakOnLoad": true,
+            "sourceMapPathOverrides": {
+                "webpack:///./src/*": "${webRoot}/*"
+            }
         }
     ]
 }
