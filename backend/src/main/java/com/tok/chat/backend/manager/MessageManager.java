@@ -30,10 +30,9 @@ public class MessageManager {
         return messageRepository.findAllByOrderByDate();
     }
 
-    public Message save(String userId, String text){
-        Optional<User> user = userRepository.findById(userId);
-        var realUser = user.orElseThrow(() -> new IllegalArgumentException("User couldn't be found"));
-        return messageRepository.save(new Message(realUser.getName(), userId, text, new Date()));
+    public Message save(String name, String text){
+        User user = userRepository.findByName(name);
+        return messageRepository.save(new Message(user.getName(), user.getId(), text, new Date()));
     }
 
     public void send(Message message){
