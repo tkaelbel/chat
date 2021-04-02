@@ -16,39 +16,41 @@
             <div class="message-text">
               <span class="margin-right-10">{{ message.text }}</span>
               <span v-if="isToday(message.date)" class="message-date">
-                {{ getDateWithFormat(message.date, true) }}
+                {{ formattedDate(message.date, true) }}
               </span>
             </div>
             <div v-if="!isToday(message.date)" class="message-date">
-              {{ getDateWithFormat(message.date, false) }}
+              {{ formattedDate(message.date, false) }}
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <q-form @submit="sendMessage" class="q-gutter-md message-form">
-      <q-input
-        bottom-slots
-        v-model="message"
-        label="Write a message"
-        counter
-        maxlength="200"
-        type="text"
-      >
-        <template v-slot:append>
-          <q-icon
-            v-if="message !== ''"
-            name="close"
-            @click="message = ''"
-            class="cursor-pointer"
-          />
-        </template>
+    <q-form class="message-form">
+      <div class="message-input">
+        <q-input
+          bottom-slots
+          v-model="message"
+          label="Write a message"
+          counter
+          maxlength="200"
+          type="text"
+        >
+          <template v-slot:append>
+            <q-icon
+              v-if="message !== ''"
+              name="close"
+              @click="message = ''"
+              class="cursor-pointer"
+            />
+          </template>
 
-        <template v-slot:after>
-          <q-btn type="submit" round flat icon="send" @click="sendMessage"/>
-        </template>
-      </q-input>
+          <template v-slot:after>
+            <q-btn type="submit" round flat icon="send" @click="sendMessage" />
+          </template>
+        </q-input>
+      </div>
     </q-form>
   </div>
 </template>
@@ -62,23 +64,29 @@ const socket = "ws://localhost:8000/socket";
 let ws = undefined;
 
 export default {
-  props: ['user'],
+  name: "message",
+  props: ["user"],
   data() {
     return {
       messages: null,
       message: null,
     };
   },
+  mounted() {
+    this.connect();
+  },
+  created() {
+    api.get("/messages").then((response) => {
+      this.messages = response.data.map((message) => ({
+        ...message,
+        date: new Date(message.date),
+      }));
+    });
+  },
+  destroyed() {
+    this.disconnect();
+  },
   methods: {
-    created() {
-      api.get("/messages").then((response) => {
-        this.messages = response.data.map((message) => ({
-          ...message,
-          date: new Date(message.date),
-        }));
-      });
-    },
-
     sendMessage() {
       if (this.message !== "") {
         const body = {
@@ -100,14 +108,6 @@ export default {
         date.getMonth() === today.getMonth() &&
         date.getFullYear() === today.getFullYear()
       );
-    },
-
-    mounted() {
-      this.connect();
-    },
-
-    destroyed() {
-      this.disconnect();
     },
 
     formattedDate(date, isToday) {
@@ -147,8 +147,9 @@ export default {
 
 <style lang="scss">
 .message-component {
-  height: 500px;
-  width: 100%;
+  height: 600px;
+  width: 500px;
+  border: 1px solid #7d7d7d;
 
   .message-container {
     padding: 20px;
@@ -202,6 +203,12 @@ export default {
     height: 75px;
     display: flex;
     align-items: center;
+    padding-left: 5px;
+    background-color: #dfdfdf;
+  }
+
+  .message-input {
+    width: 100%;
   }
 }
 ::-webkit-scrollbar {

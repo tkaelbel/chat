@@ -2,8 +2,6 @@ package com.tok.chat.backend.manager;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-
 import com.tok.chat.backend.database.message.Message;
 import com.tok.chat.backend.database.message.MessageRepository;
 import com.tok.chat.backend.database.user.User;
@@ -25,17 +23,16 @@ public class MessageManager {
     @Autowired
     private ChatMessageBus chatMessageBus;
 
-
-    public List<Message> getAllMessages(){
+    public List<Message> getAllMessages() {
         return messageRepository.findAllByOrderByDate();
     }
 
-    public Message save(String name, String text){
+    public Message save(String name, String text) {
         User user = userRepository.findByName(name);
         return messageRepository.save(new Message(user.getName(), user.getId(), text, new Date()));
     }
 
-    public void send(Message message){
+    public void send(Message message) {
         chatMessageBus.emit(message);
     }
 

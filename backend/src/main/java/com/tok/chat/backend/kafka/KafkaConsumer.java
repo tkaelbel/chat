@@ -16,6 +16,6 @@ public class KafkaConsumer {
     @KafkaListener(topics = "chat", containerFactory = "kafkaListenerContainerFactory")
     public void listen(Message message){
         System.out.println("Received greeting message: " + message);
-        template.convertAndSend("chat", message);
+        template.convertAndSend("/chat", message);
     }
 }
