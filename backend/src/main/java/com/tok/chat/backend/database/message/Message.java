@@ -30,7 +30,7 @@ public class Message implements Serializable {
     @Field
     private String userName;
     @Field
-    private String usedId;
+    private String userId;
     @Field
     private String text;
     @Field
