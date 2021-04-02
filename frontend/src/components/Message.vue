@@ -4,12 +4,11 @@
       <div class="messages">
         <div
           v-for="message in messages"
-          v-bind:key="message"
           v-bind:class="
             isCurrentUser(message.userId) ? 'current-user' : 'other-user'
           "
         >
-          <div class="bubble" v-if="message">
+          <div class="bubble">
             <div v-if="!isCurrentUser(message.userId)" class="user-name">
               {{ message.userName }}
             </div>
@@ -147,8 +146,8 @@ export default {
 
 <style lang="scss">
 .message-component {
-  height: 600px;
-  width: 500px;
+  height: 500px;
+  width: 100%;
   border: 1px solid #7d7d7d;
 
   .message-container {
