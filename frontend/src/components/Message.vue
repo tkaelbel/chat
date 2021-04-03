@@ -1,57 +1,63 @@
 <template>
-  <div class="message-component">
-    <div class="message-container">
-      <div class="messages">
-        <div
-          v-for="message in messages"
-          v-bind:class="
-            isCurrentUser(message.userId) ? 'current-user' : 'other-user'
-          "
-        >
-          <div class="bubble">
-            <div v-if="!isCurrentUser(message.userId)" class="user-name">
-              {{ message.userName }}
-            </div>
-            <div class="message-text">
-              <span class="margin-right-10">{{ message.text }}</span>
-              <span v-if="isToday(message.date)" class="message-date">
-                {{ formattedDate(message.date, true) }}
-              </span>
-            </div>
-            <div v-if="!isToday(message.date)" class="message-date">
-              {{ formattedDate(message.date, false) }}
+    <div class="message-component">
+      <div class="message-container">
+        <div class="messages">
+          <div
+            v-for="message in messages"
+            v-bind:class="
+              isCurrentUser(message.userId) ? 'current-user' : 'other-user'
+            "
+          >
+            <div class="bubble">
+              <div v-if="!isCurrentUser(message.userId)" class="user-name">
+                {{ message.userName }}
+              </div>
+              <div class="message-text">
+                <span class="margin-right-10">{{ message.text }}</span>
+                <span v-if="isToday(message.date)" class="message-date">
+                  {{ formattedDate(message.date, true) }}
+                </span>
+              </div>
+              <div v-if="!isToday(message.date)" class="message-date">
+                {{ formattedDate(message.date, false) }}
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <q-form class="message-form">
+        <div class="message-input">
+          <q-input
+            bottom-slots
+            v-model="message"
+            label="Write a message"
+            counter
+            maxlength="200"
+            type="text"
+          >
+            <template v-slot:append>
+              <q-icon
+                v-if="message !== ''"
+                name="close"
+                @click="message = ''"
+                class="cursor-pointer"
+              />
+            </template>
+
+            <template v-slot:after>
+              <q-btn
+                type="submit"
+                round
+                flat
+                icon="send"
+                @click="sendMessage"
+              />
+            </template>
+          </q-input>
+        </div>
+      </q-form>
     </div>
-
-    <q-form class="message-form">
-      <div class="message-input">
-        <q-input
-          bottom-slots
-          v-model="message"
-          label="Write a message"
-          counter
-          maxlength="200"
-          type="text"
-        >
-          <template v-slot:append>
-            <q-icon
-              v-if="message !== ''"
-              name="close"
-              @click="message = ''"
-              class="cursor-pointer"
-            />
-          </template>
-
-          <template v-slot:after>
-            <q-btn type="submit" round flat icon="send" @click="sendMessage" />
-          </template>
-        </q-input>
-      </div>
-    </q-form>
-  </div>
 </template>
 
 <script>
@@ -146,13 +152,13 @@ export default {
 
 <style lang="scss">
 .message-component {
-  height: 500px;
+  height: 70vh;
   width: 100%;
   border: 1px solid #7d7d7d;
 
   .message-container {
     padding: 20px;
-    height: calc(100% - 75px);
+    height: calc(100% - 77px);
     overflow-y: scroll;
     .messages {
       .current-user {
@@ -199,7 +205,6 @@ export default {
 
   .message-form {
     width: 100%;
-    height: 75px;
     display: flex;
     align-items: center;
     padding-left: 5px;

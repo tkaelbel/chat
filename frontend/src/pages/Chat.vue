@@ -1,8 +1,8 @@
 <template>
   <q-page class="flex flex-center">
-    <div class="q-pa-md q-gutter-sm">
+    <!-- <div class="q-pa-md q-gutter-sm"> -->
       <div v-if="!user" class="userForm">
-        <h1>Just Chat</h1>
+        <h2>Just Chat</h2>
         <q-form @submit="activeUser" class="q-gutter-md">
           <q-input
             filled
@@ -25,7 +25,7 @@
         </q-form>
       </div>
       <message v-else :user="user"></message>
-    </div>
+    <!-- </div> -->
   </q-page>
 </template>
 
