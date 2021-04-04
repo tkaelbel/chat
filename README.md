@@ -28,7 +28,7 @@ docker-compose -f ./docker-compose.yml up -d
 Start `BackendApplication` from VSCode with Spring Boot Dashboard.
 
 ### Frontend
-Navigate to /.frontend.
+Navigate to /frontend.
 
 #### Web
 ```bash
